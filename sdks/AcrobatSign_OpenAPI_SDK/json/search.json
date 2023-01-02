@@ -1,0 +1,486 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "secure.na3.adobesign.com",
+    "version": "6.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://secure.na3.adobesign.com/api/rest/v6"
+    }
+  ],
+  "paths": {
+    "/search": {
+      "post": {
+        "parameters": [
+          {
+            "description": "An <a href=\"#\" class=\"link-oauth-search\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth-search\" data-link-scope=\"agreement_read\" target=\"oauthDoc\">agreement_read</a></li><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth-search\" data-link-scope=\"library_read\" target=\"oauthDoc\">library_read</a></li><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth-search\" data-link-scope=\"widget_read\" target=\"oauthDoc\">widget_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+            "in": "header",
+            "name": "x-api-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+            "in": "header",
+            "name": "x-on-behalf-of-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Ownership scope of the agreement documents to include in this search request (defaults to OWNED):<ul><li style='list-style-type: square'><b>OWNED</b> - Fetch only agreement documents that belong to the requesting user (default).</li><li style='list-style-type: square'><b>SHARED</b> - Fetch all agreement documents that have been shared with the requesting user but exclude agreement documents that belong to him.</li><li style='list-style-type: square'><b>SHARED_AND_OWNED</b> - Fetch all agreements documents that have been shared with the requesting user and include the agreements that belong to him.</li></ul>",
+            "in": "header",
+            "name": "x-ownership-scope",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResults"
+                }
+              }
+            },
+            "description": "No response was specified"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "agreement_read",
+              "library_read",
+              "widget_read"
+            ]
+          }
+        ],
+        "operationId": "searchResources",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestBody"
+              }
+            }
+          },
+          "description": "The parameters of your search request.",
+          "required": true
+        },
+        "summary": "Retrieves, searches, filters, and sorts agreements for the user."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgreementAssetsCriteria": {
+        "properties": {
+          "createdDate": {
+            "$ref": "#/components/schemas/DateRangeFilter",
+            "description": "A range filter against the agreement creation date. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "items": {
+              "$ref": "#/components/schemas/DateRangeFilter"
+            }
+          },
+          "expirationDate": {
+            "$ref": "#/components/schemas/DateRangeFilter",
+            "description": "A range filter against the agreement expiration date. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "items": {
+              "$ref": "#/components/schemas/DateRangeFilter"
+            }
+          },
+          "externalId": {
+            "description": "A filter against case-sensitive external id for which you would like to retrieve agreement asset information. External id is passed in the call to the agreement asset creation API.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "groupId": {
+            "description": "A filter against group identifier, as returned by the group creation API or retrieved from the API to fetch groups.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "description": "A filter against case-sensitive agreement asset id for which you would like to retrieve the information.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "modifiedDate": {
+            "$ref": "#/components/schemas/DateRangeFilter",
+            "description": "A range filter against the last date the agreement was modified by user action (signing, canceling, etc.). The Modified value updates with every action until the agreement reaches a terminal status (Complete/Canceled/Expired). Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "items": {
+              "$ref": "#/components/schemas/DateRangeFilter"
+            }
+          },
+          "pageSize": {
+            "default": 50,
+            "description": "The maximum number of elements returned in the result set. The value must be greater than or equal to 1 and less than or equal to 100. If not set, the default value is 50.",
+            "type": "integer"
+          },
+          "parentId": {
+            "description": "A filter against case-sensitive parent id for which you would like to retrieve agreement asset information.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "participantEmail": {
+            "description": "A filter against the email addresses of the agreement asset participants.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "queryableFields": {
+            "description": "['title' or 'note' or 'message' or 'originalFileName' or 'email' or 'fullName' or 'jobTitle' or 'companyName' or 'recipientGroupName' or 'textFieldContent' or 'sharerFullName' or 'sharerRecipientGroupName' or 'externalId' or 'externalGroupId' or 'agreementId']: a list of field names against which string query specified in the 'query' field above is executed. For more information please refer here: <a href=\"https://helpx.adobe.com/sign/using/adobesign-search-users-agreements.html#NamePrefix\" target=\"_blank\">Field Name Prefix Query</a> (opens in separate window/tab).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "role": {
+            "description": "['SENDER' or 'CC' or 'SIGNER' or 'APPROVER' or 'FORM_FILLER' or 'ACCEPTOR' or 'CERTIFIED_RECIPIENT' or 'DELEGATE_TO_SIGNER' or 'DELEGATE_TO_APPROVER' or 'DELEGATE_TO_FORM_FILLER' or 'DELEGATE_TO_ACCEPTOR' or 'DELEGATE_TO_CERTIFIED_RECIPIENT' or 'NOTARY_SIGNER' or 'SHARE' or 'OTHER']: a filter against the roles the user has on agreement assets.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sortByField": {
+            "description": "['CREATED_DATE' or 'MODIFIED_DATE' or 'EXPIRATION_DATE' or 'NAME' or 'STATUS' or 'SENDER']: defines the field by which the results will be ordered.",
+            "type": "string"
+          },
+          "sortOrder": {
+            "description": "['ASC' or 'DESC']: defines the sort order for the sortField field. Please note that for date sort fields agreements with missing date values for the sort field will always appear last, irrespective of sort order. For other types of sort fields agreements with missing values for the sort field appear last if order is ascending, and first if order is descending.",
+            "type": "string"
+          },
+          "startIndex": {
+            "default": 0,
+            "description": "0-based first row (offset) of the search results to return. The value must be greater than or equal to 0 and less than 10,000. If not provided, the default value is 0 and returns results from the very fist row, without offset.",
+            "type": "integer"
+          },
+          "status": {
+            "description": "['WAITING_FOR_MY_SIGNATURE' or 'WAITING_FOR_MY_APPROVAL' or 'WAITING_FOR_MY_DELEGATION' or 'WAITING_FOR_MY_ACKNOWLEDGEMENT' or 'WAITING_FOR_MY_ACCEPTANCE' or 'WAITING_FOR_MY_FORM_FILLING' or 'WAITING_FOR_PREFILL' or 'WAITING_FOR_AUTHORING' or 'WAITING_FOR_PREFILL' or 'OUT_FOR_SIGNATURE' or 'OUT_FOR_APPROVAL' or 'OUT_FOR_DELIVERY' or 'OUT_FOR_ACCEPTANCE' or 'OUT_FOR_FORM_FILLING' or 'SIGNED' or 'APPROVED' or 'FORM_FILLED' or 'DELIVERED' or 'ACCEPTED' or 'ARCHIVED' or 'CANCELLED' or 'REMOVED' or 'EXPIRED' or 'AUTHORING' or 'ACTIVE' or 'DISABLED' or 'WAITING_FOR_NOTARIZATION' or  'ACCEPT_BEFORE_NOTARIZATION' or 'OTHER']: a filter against the detailed status of the agreement asset. <b>Please note that PARTIAL and DRAFT agreements are not supported for search.</b>",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subTypes": {
+            "description": "['DOCUMENT' or 'FORM_FIELD_LAYER']: a filter against the agreement asset sub types. Only agreement assets with type LIBRARY_TEMPLATE currently have this field populated.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": {
+            "description": "['AGREEMENT' or 'MEGASIGN_CHILD' or 'WIDGET_INSTANCE' or 'MEGASIGN_PARENT' or 'LIBRARY_TEMPLATE' or 'WIDGET']: a filter against the agreement asset type.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "userId": {
+            "description": "A filter against the user id for account sharing.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "visibility": {
+            "description": "['SHOW_VISIBLE' or 'SHOW_HIDDEN' or 'SHOW_ALL']: a filter indicating the visibility level of agreements that get returned in the response. SHOW_VISIBLE by default.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AgreementAssetsResult": {
+        "properties": {
+          "createdDate": {
+            "description": "The date on which the agreement asset was created. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time.",
+            "type": "string"
+          },
+          "expirationDate": {
+            "description": "The date on which the agreement asset expires and needs to be signed before it. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time.",
+            "type": "string"
+          },
+          "externalId": {
+            "description": "An arbitrary value from your system, which can be specified at sending time and then later returned or queried.",
+            "type": "string"
+          },
+          "groupId": {
+            "description": "Unique identifier of the group associated with the owner of the view of the agreement asset.",
+            "type": "string"
+          },
+          "hidden": {
+            "description": "True if agreement asset is hidden for the user.",
+            "type": "boolean"
+          },
+          "id": {
+            "description": "The unique identifier of the agreement asset.",
+            "type": "string"
+          },
+          "modifiedDate": {
+            "description": "The last date the agreement was modified by user action (signing, canceling, etc.). The Modified value updates with every action until the agreement reaches a terminal status (Complete/Canceled/Expired). Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the agreement asset.",
+            "type": "string"
+          },
+          "parentId": {
+            "description": "the parent id of a bulk send child *OR* the originating id of a web form agreement instance.",
+            "type": "string"
+          },
+          "participantList": {
+            "description": "List of all participants for the agreement asset except where the document view owner, i.e. API caller, is a participant. Fields related to the document view owner ('userId', 'groupId', 'role', 'status', 'hidden') and their role, if any, as participant are included at the top level of AgreementAssetsResult object.",
+            "items": {
+              "$ref": "#/components/schemas/SearchResultParticipant"
+            },
+            "type": "array"
+          },
+          "role": {
+            "description": "['SENDER' or 'CC' or 'SIGNER' or 'APPROVER' or 'FORM_FILLER' or 'ACCEPTOR' or 'CERTIFIED_RECIPIENT' or 'DELEGATE_TO_SIGNER' or 'DELEGATE_TO_APPROVER' or 'DELEGATE_TO_FORM_FILLER' or 'DELEGATE_TO_ACCEPTOR' or 'DELEGATE_TO_CERTIFIED_RECIPIENT' or 'NOTARY_SIGNER' or 'SHARE' or 'OTHER']: The roles user has on agreement assets.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "description": "['WAITING_FOR_MY_SIGNATURE' or 'WAITING_FOR_MY_APPROVAL' or 'WAITING_FOR_MY_DELEGATION' or 'WAITING_FOR_MY_ACKNOWLEDGEMENT' or 'WAITING_FOR_MY_ACCEPTANCE' or 'WAITING_FOR_MY_FORM_FILLING' or 'WAITING_FOR_PREFILL' or 'WAITING_FOR_AUTHORING' or 'WAITING_FOR_PREFILL' or 'OUT_FOR_SIGNATURE' or 'OUT_FOR_APPROVAL' or 'OUT_FOR_DELIVERY' or 'OUT_FOR_ACCEPTANCE' or 'OUT_FOR_FORM_FILLING' or 'SIGNED' or 'APPROVED' or 'FORM_FILLED' or 'DELIVERED' or 'ACCEPTED' or 'ARCHIVED' or 'CANCELLED' or 'REMOVED' or 'EXPIRED' or 'AUTHORING' or 'ACTIVE' or 'DISABLED' or 'WAITING_FOR_NOTARIZATION' or  'ACCEPT_BEFORE_NOTARIZATION' or 'OTHER']: detailed status of the agreement asset. <b>Please note that PARTIAL and DRAFT agreements are not supported for search.</b>",
+            "type": "string"
+          },
+          "subTypes": {
+            "description": "['DOCUMENT' or 'FORM_FIELD_LAYER']: The sub types of the agreement asset. Only agreement assets with type LIBRARY_TEMPLATE currently have this field populated.",
+            "items": {},
+            "type": "array"
+          },
+          "type": {
+            "description": "['AGREEMENT' or 'MEGASIGN_CHILD' or 'WIDGET_INSTANCE' or 'MEGASIGN_PARENT' or 'LIBRARY_TEMPLATE' or 'WIDGET']: The kind of the agreement asset.",
+            "type": "string"
+          },
+          "userId": {
+            "description": "Unique identifier of the owner of the view of the agreement asset.",
+            "type": "string"
+          },
+          "workflowId": {
+            "description": "The identifier of custom workflow which defines the routing path of an agreement.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupId",
+          "hidden",
+          "id",
+          "name",
+          "role",
+          "status",
+          "type",
+          "userId"
+        ],
+        "type": "object"
+      },
+      "AgreementAssetsResults": {
+        "properties": {
+          "agreementAssetsResultList": {
+            "description": "An array of AgreementAssetsResult items.",
+            "items": {
+              "$ref": "#/components/schemas/AgreementAssetsResult"
+            },
+            "type": "array"
+          },
+          "searchPageInfo": {
+            "$ref": "#/components/schemas/SearchPageInfo",
+            "description": "Pagination information for navigating through the response.",
+            "items": {
+              "$ref": "#/components/schemas/SearchPageInfo"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/SearchStatusInfo",
+            "description": "Status of the search response for AGREEMENT_ASSETS scope.",
+            "items": {
+              "$ref": "#/components/schemas/SearchStatusInfo"
+            }
+          },
+          "totalHits": {
+            "description": "Total number of search results for AGREEMENT_ASSETS scope.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "agreementAssetsResultList",
+          "searchPageInfo",
+          "status",
+          "totalHits"
+        ],
+        "type": "object"
+      },
+      "DateRange": {
+        "properties": {
+          "gt": {
+            "description": "The maximum allowed date-time that is allowed in the result set. Values for each range field must adhere to the ISO-8601 standard. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "type": "string"
+          },
+          "lt": {
+            "description": "The minimum allowed date-time that is allowed in the result set. Values for each range field must adhere to the ISO-8601 standard. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "type": "string"
+          },
+          "max": {
+            "description": "The maximum allowed date-time that is allowed in the result set. Values for each range field must adhere to the ISO-8601 standard. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "type": "string"
+          },
+          "min": {
+            "description": "The minimum allowed date-time that is allowed in the result set. Values for each range field must adhere to the ISO-8601 standard. Range terms can be defined as less-than/greater-than or min/max. If terms are mixed the JSON will be considered malformed.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DateRangeFilter": {
+        "properties": {
+          "range": {
+            "$ref": "#/components/schemas/DateRange",
+            "description": "Unique identifier of the user this agreement view is associated with.",
+            "items": {
+              "$ref": "#/components/schemas/DateRange"
+            }
+          }
+        },
+        "required": [
+          "range"
+        ],
+        "type": "object"
+      },
+      "SearchPageInfo": {
+        "properties": {
+          "nextIndex": {
+            "description": "0-based row number of the last returned result + 1. Set to 0 (or not set) if there are no more search results. Set to NULL if all search results were returned and there are no more search results for the next page.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nextIndex"
+        ],
+        "type": "object"
+      },
+      "SearchRequestBody": {
+        "properties": {
+          "agreementAssetsCriteria": {
+            "$ref": "#/components/schemas/AgreementAssetsCriteria",
+            "description": "Contains all of the necessary information about filtering and sorting agreement assets search results.",
+            "items": {
+              "$ref": "#/components/schemas/AgreementAssetsCriteria"
+            }
+          },
+          "query": {
+            "description": "This field provides text search capability against terms in the field values of agreements that are visible to the user making the request. To find more about how text searching works please refer here: <a href=\"https://helpx.adobe.com/sign/using/adobesign-search-users-agreements.html#HowSearchWorks\" target=\"_blank\">How Adobe Sign Search Works</a> (opens in separate window/tab).",
+            "type": "string"
+          },
+          "scope": {
+            "description": "['AGREEMENT_ASSETS']: a resource scope. 'AGREEMENT_ASSETS' is the only value that is supported right now which includes the following resources: agreements, megaSigns, libraryDocuments and widgets.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "scope"
+        ],
+        "type": "object"
+      },
+      "SearchResultParticipant": {
+        "properties": {
+          "company": {
+            "description": "The name of the company of the participant, if available.",
+            "type": "string"
+          },
+          "email": {
+            "description": "The email of the user.",
+            "type": "string"
+          },
+          "fullName": {
+            "description": "The full name of the participant, if available.",
+            "type": "string"
+          },
+          "participantSetNames": {
+            "description": "The names of the participant sets. Returned only if the participant belongs to any participant sets.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "role": {
+            "description": "['ORIGINATOR' or 'CC' or 'SENDER' or 'SIGNER' or 'APPROVER' or 'FORM_FILLER' or 'ACCEPTOR' or 'CERTIFIED_RECIPIENT' or 'DELEGATE_TO_SIGNER' or 'DELEGATE_TO_APPROVER' or 'DELEGATE_TO_FORM_FILLER' or 'DELEGATE_TO_ACCEPTOR' or 'DELEGATE_TO_CERTIFIED_RECIPIENT' or 'NOTARY_SIGNER' or 'SHARE' or 'OTHER']: all roles the participant has on the agreement asset.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "email",
+          "role"
+        ],
+        "type": "object"
+      },
+      "SearchResults": {
+        "properties": {
+          "agreementAssetsResults": {
+            "$ref": "#/components/schemas/AgreementAssetsResults",
+            "description": "Object that contains AGREEMENT_ASSETS search results.",
+            "items": {
+              "$ref": "#/components/schemas/AgreementAssetsResults"
+            }
+          },
+          "totalHits": {
+            "description": "Total number of search results across all scopes.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "totalHits"
+        ],
+        "type": "object"
+      },
+      "SearchStatusInfo": {
+        "properties": {
+          "code": {
+            "description": "Status code returned for the search response.",
+            "type": "integer"
+          },
+          "message": {
+            "description": "Descriptive message corresponding to the status code.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

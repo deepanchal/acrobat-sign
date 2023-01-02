@@ -1,0 +1,459 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "secure.na3.adobesign.com",
+    "version": "6.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://secure.na3.adobesign.com/api/rest/v6"
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "post": {
+        "parameters": [
+          {
+            "description": "An <a href=\"#\" class=\"link-oauth\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth\" data-link-scope=\"scope-account_write\">account_write</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+            "in": "header",
+            "name": "x-api-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountCreateResponse"
+                }
+              }
+            },
+            "description": "No response was specified"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_write"
+            ]
+          }
+        ],
+        "operationId": "createAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountCreationInfo"
+              }
+            }
+          },
+          "description": "Information required for creating the account",
+          "required": true
+        },
+        "summary": "Creates an Acrobat Sign account under the partner channel"
+      }
+    },
+    "/accounts/{accountId}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "An <a href=\"#\" class=\"link-oauth\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth\" data-link-scope=\"scope-user_read\">user_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+            "in": "header",
+            "name": "x-api-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The account identifier.",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": "No response was specified"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "user_read"
+            ]
+          }
+        ],
+        "operationId": "getAccount",
+        "summary": "Retrieves the information for an account."
+      }
+    },
+    "/accounts/{accountId}/events": {
+      "get": {
+        "parameters": [
+          {
+            "description": "An <a href=\"#\" class=\"link-oauth\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth\" data-link-scope=\"scope-user_read\">user_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The account identifier.",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+            "in": "header",
+            "name": "x-api-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Used to navigate through the pages. If not provided, returns the first page.",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of intended items in the response page. If not provided, it is decided by the application settings.",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountEventsList"
+                }
+              }
+            },
+            "description": "No response was specified"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "user_read"
+            ]
+          }
+        ],
+        "operationId": "getAccountEvents",
+        "summary": "Retrieves all events for account"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Account": {
+        "description": "Account resource for the User",
+        "properties": {
+          "accountType": {
+            "description": "The provisioned type of the account. This is a server generated attributed and can not be provided in POST/PUT calls.",
+            "enum": [
+              "FREE",
+              "FREE_LEGACY",
+              "TEAM_TRIAL",
+              "TEAM",
+              "TEAM_LEGACY",
+              "ENTERPRISE_TRIAL",
+              "ENTERPRISE",
+              "ENTERPRISE_LEGACY",
+              "GLOBAL_TRIAL",
+              "GLOBAL",
+              "DEVELOPER",
+              "PRO_DOC_CLOUD",
+              "TRIAL_EXPIRED",
+              "ANONYMOUS",
+              "PRO_DOC_CLOUD_MULTI",
+              "PRO_PLUS_DOC_CLOUD",
+              "PRO_PLUS_DOC_CLOUD_MULTI",
+              "GLOBAL_TRIAL_V2",
+              "GLOBAL_TRIAL_EXPIRED_V2"
+            ],
+            "type": "string"
+          },
+          "company": {
+            "description": "The company associated with the account. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+            "type": "string"
+          },
+          "created": {
+            "description": "Date when the account was created. This is a server generated attributed and can not be provided in POST/PUT calls. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+            "format": "date",
+            "type": "string"
+          },
+          "id": {
+            "description": "Identifier of the account. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+            "type": "string"
+          },
+          "modified": {
+            "description": "The last date that the account information was updated. This is a server generated attributed and can not be provided in POST/PUT calls. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+            "format": "date",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name which the account is known. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AccountCreateResponse": {
+        "description": "AccountCreateResponse",
+        "properties": {
+          "accountId": {
+            "description": "Account id of the created account",
+            "type": "string"
+          },
+          "adminDetails": {
+            "$ref": "#/components/schemas/AdminDetails",
+            "description": "Admin user details",
+            "items": {
+              "$ref": "#/components/schemas/AdminDetails"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "AccountCreationInfo": {
+        "description": "AccountCreationInfo",
+        "properties": {
+          "accountType": {
+            "description": "Type of account",
+            "enum": [
+              "FREE",
+              "ENTERPRISE",
+              "ENTERPRISE_TRIAL",
+              "GLOBAL",
+              "GLOBAL_TRIAL",
+              "DEVELOPER"
+            ],
+            "type": "string"
+          },
+          "adminUserInfo": {
+            "$ref": "#/components/schemas/AdminUserInfo",
+            "description": "Admin user information",
+            "items": {
+              "$ref": "#/components/schemas/AdminUserInfo"
+            }
+          },
+          "company": {
+            "description": "Company name",
+            "type": "string"
+          },
+          "countryCode": {
+            "description": "Account country code",
+            "type": "string"
+          },
+          "externalId": {
+            "description": "External id for the account",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Account locale",
+            "type": "string"
+          },
+          "numSeats": {
+            "description": "Number of seats",
+            "type": "integer"
+          },
+          "trialDuration": {
+            "description": "Account trial duration",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "accountType",
+          "adminUserInfo",
+          "countryCode",
+          "numSeats"
+        ],
+        "type": "object"
+      },
+      "AccountEvent": {
+        "description": "A JSON of one account event, null",
+        "properties": {
+          "accountEventId": {
+            "description": "The identifier for the event.",
+            "type": "string"
+          },
+          "accountId": {
+            "description": "Identifier of the account. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+            "type": "string"
+          },
+          "adminUserId": {
+            "description": "Account admin user ID",
+            "type": "string"
+          },
+          "date": {
+            "description": "The date of the user event. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+            "format": "date",
+            "type": "string"
+          },
+          "event": {
+            "description": "Type of account event",
+            "enum": [
+              "CREATED",
+              "CANCELLED",
+              "USER_ADDED",
+              "USER_REMOVED",
+              "USER_DISABLED",
+              "ACCOUNT_TYPE_UPDATED",
+              "ACCOUNT_SETUP_EMAIL_SENT"
+            ],
+            "type": "string"
+          },
+          "userId": {
+            "description": "The user ID of the signing participant.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "adminUserId",
+          "date",
+          "userId"
+        ],
+        "type": "object"
+      },
+      "AccountEventsList": {
+        "description": "A JSON list of all account events",
+        "properties": {
+          "accountEvents": {
+            "description": "List of account events",
+            "items": {
+              "$ref": "#/components/schemas/AccountEvent"
+            },
+            "type": "array"
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageInfo",
+            "description": "Pagination information for navigating through the response",
+            "items": {
+              "$ref": "#/components/schemas/PageInfo"
+            }
+          }
+        },
+        "required": [
+          "accountEvents",
+          "page"
+        ],
+        "type": "object"
+      },
+      "AdminDetails": {
+        "description": "AdminDetails",
+        "properties": {
+          "email": {
+            "description": "Email ID of the admin user",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of the admin user",
+            "type": "string"
+          },
+          "userId": {
+            "description": "Id of the admin user",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AdminUserInfo": {
+        "description": "AdminUserInfo",
+        "properties": {
+          "email": {
+            "description": "Email ID of the admin user",
+            "type": "string"
+          },
+          "firstName": {
+            "description": "First name of the admin user",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "Last name of the admin user",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale of the admin user",
+            "type": "string"
+          },
+          "phone": {
+            "description": "Phone number of the admin user",
+            "type": "string"
+          },
+          "title": {
+            "description": "Title of the admin user",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "firstName",
+          "lastName"
+        ],
+        "type": "object"
+      },
+      "PageInfo": {
+        "properties": {
+          "nextCursor": {
+            "description": "Used to navigate to the next page. If not returned, there are no further pages.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nextCursor"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

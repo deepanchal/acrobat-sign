@@ -1,0 +1,172 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "secure.na3.adobesign.com",
+    "version": "6.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://secure.na3.adobesign.com/api/rest/v6"
+    }
+  ],
+  "paths": {
+    "/messageTemplates": {
+      "get": {
+        "parameters": [
+          {
+            "description": "An <a href=\"#\" class=\"link-oauth\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" class=\"link-oauth\" data-link-scope=\"scope-user_read\">user_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+            "in": "header",
+            "name": "x-api-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+            "in": "header",
+            "name": "x-on-behalf-of-user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Message template locale",
+            "in": "query",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The group identifier, as returned by the group creation API or retrieved from the API to fetch groups.",
+            "in": "query",
+            "name": "groupId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Used to navigate through the pages. If not provided, returns the first page.",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of intended items in the response page. If not provided, it is decided by the application settings.",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageTemplates"
+                }
+              }
+            },
+            "description": "No response was specified"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "user_read"
+            ]
+          }
+        ],
+        "operationId": "getMessageTemplates",
+        "summary": "Retrieves a list of message templates applicable to the current user."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MessageTemplate": {
+        "description": "Message template item",
+        "properties": {
+          "locale": {
+            "description": "Message template locale",
+            "type": "string"
+          },
+          "messageTemplateId": {
+            "description": "Unique identifier of the message template",
+            "type": "string"
+          },
+          "name": {
+            "description": "Message template name",
+            "type": "string"
+          },
+          "text": {
+            "description": "Message template text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "locale",
+          "messageTemplateId",
+          "name",
+          "text"
+        ],
+        "type": "object"
+      },
+      "MessageTemplates": {
+        "description": "List of message templates",
+        "properties": {
+          "messageTemplateList": {
+            "description": "An array of message template items",
+            "items": {
+              "$ref": "#/components/schemas/MessageTemplate"
+            },
+            "type": "array"
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageInfo",
+            "description": "Pagination information for navigating through the response",
+            "items": {
+              "$ref": "#/components/schemas/PageInfo"
+            }
+          }
+        },
+        "required": [
+          "messageTemplateList",
+          "page"
+        ],
+        "type": "object"
+      },
+      "PageInfo": {
+        "properties": {
+          "nextCursor": {
+            "description": "Used to navigate to the next page. If not returned, there are no further pages.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nextCursor"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

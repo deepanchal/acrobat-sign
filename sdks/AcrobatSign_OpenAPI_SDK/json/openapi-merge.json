@@ -1,0 +1,45 @@
+{
+  "inputs": [
+    {
+      "inputFile": "./accounts.json"
+    },
+    {
+      "inputFile": "./agreements.json",
+    },
+    {
+      "inputFile": "./baseUris.json",
+    },
+    {
+      "inputFile": "./groups.json",
+    },
+    {
+      "inputFile": "./libraryDocuments.json",
+    },
+    {
+      "inputFile": "./megaSigns.json",
+    },
+    {
+      "inputFile": "./messageTemplates.json",
+    },
+    {
+      "inputFile": "./search.json",
+    },
+    {
+      "inputFile": "./transientDocuments.json",
+    },
+    {
+      "inputFile": "./users.json",
+    },
+    {
+      "inputFile": "./webhooks.json",
+    },
+    {
+      "inputFile": "./widgets.json",
+    },
+    {
+      "inputFile": "./workflows.json",
+    },
+  ],
+  "output": "./output.swagger.json"
+}
+
